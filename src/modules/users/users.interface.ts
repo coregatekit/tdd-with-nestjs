@@ -14,3 +14,9 @@ export interface IUserResponse {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface RegisterUserDTO {
+  name: string;
+  email: string;
+  password: string;
+}
