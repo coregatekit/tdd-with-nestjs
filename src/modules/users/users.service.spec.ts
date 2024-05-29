@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from './users.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { IUserResponse } from './users.interface';
+import { User } from './user';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -55,6 +56,41 @@ describe('UsersService', () => {
       expect(mockPrismaService.user.findFirst).toBeCalledWith({
         where: { email: expectedUser.email },
       });
+    });
+
+    afterEach(() => {
+      global.Date.now = RealDate;
+    });
+  });
+
+  describe('transformToResponse', () => {
+    const RealDate = Date.now;
+    beforeEach(() => {
+      global.Date.now = jest.fn(() =>
+        new Date('2024-01-23T10:20:30Z').getTime(),
+      );
+    });
+
+    it('should return a user response', () => {
+      const user = new User(
+        '1',
+        'John Doe',
+        'john@example.com',
+        'password',
+        new Date(),
+        new Date(),
+      );
+      const expectedUserResponse = {
+        id: '1',
+        name: 'John Doe',
+        email: 'john@example.com',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      } as IUserResponse;
+
+      const result = service.transformUserToResponse(user);
+
+      expect(result).toEqual(expectedUserResponse);
     });
 
     afterEach(() => {

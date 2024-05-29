@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { IUserResponse } from './users.interface';
+import { User } from './user';
 
 @Injectable()
 export class UsersService {
@@ -21,6 +22,19 @@ export class UsersService {
     const user = await this._prismaService.user.findFirst({
       where: { email: email },
     });
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
+    } as IUserResponse;
+  }
+
+  /**
+   * Method that transform user to user response
+   */
+  transformUserToResponse(user: User): IUserResponse {
     return {
       id: user.id,
       name: user.name,
