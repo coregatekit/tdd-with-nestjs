@@ -17,6 +17,8 @@ export class UsersService {
 
   /**
    * Method that find user with email
+   * @param email The email @type string
+   * @returns The user response @interface IUserResponse
    */
   async findUserByEmail(email: string): Promise<IUserResponse> {
     const user = await this._prismaService.user.findFirst({
@@ -33,6 +35,8 @@ export class UsersService {
 
   /**
    * Method that transform user to user response
+   * @param user The user class @class User
+   * @returns The user response type @interface IUserResponse
    */
   transformUserToResponse(user: User): IUserResponse {
     return {
