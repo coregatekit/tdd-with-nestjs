@@ -1,5 +1,10 @@
 import { User } from './user';
 import { IUser } from './users.interface';
+import * as bcrypt from 'bcrypt';
+
+jest.mock('bcrypt', () => ({
+  hash: jest.fn().mockResolvedValue('hashed_password'),
+}));
 
 describe('Users', () => {
   it('should be defined', () => {
@@ -21,5 +26,23 @@ describe('Users', () => {
         mockUser.updatedAt,
       ),
     ).toBeDefined();
+  });
+
+  describe('hasedPassword', () => {
+    it('should return hashed password', async () => {
+      const user = new User(
+        '1',
+        'John Doe',
+        'john@example.com',
+        'password',
+        new Date(),
+        new Date(),
+      );
+
+      const result = await user.hashedPassword('password');
+
+      expect(result).toEqual('hashed_password');
+      expect(bcrypt.hash).toBeCalledWith('password', 10);
+    });
   });
 });
