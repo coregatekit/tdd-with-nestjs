@@ -41,14 +41,25 @@ describe('UsersService', () => {
     });
 
     it('should return a user', async () => {
+      const mockedUser = new User(
+        '1',
+        'John Doe',
+        'john@example.com',
+        'password',
+        new Date(),
+        new Date(),
+      );
       const expectedUser = {
-        id: '1',
-        name: 'John Doe',
-        email: 'john@example.com',
+        id: mockedUser.id,
+        name: mockedUser.name,
+        email: mockedUser.email,
         createdAt: new Date(),
         updatedAt: new Date(),
       } as IUserResponse;
-      mockPrismaService.user.findFirst.mockResolvedValue(expectedUser);
+      mockPrismaService.user.findFirst.mockResolvedValue(mockedUser);
+      service.transformUserToResponse = jest
+        .fn()
+        .mockResolvedValue(expectedUser);
 
       const result = await service.findUserByEmail(expectedUser.email);
 
@@ -56,6 +67,7 @@ describe('UsersService', () => {
       expect(mockPrismaService.user.findFirst).toBeCalledWith({
         where: { email: expectedUser.email },
       });
+      expect(service.transformUserToResponse).toBeCalled();
     });
 
     afterEach(() => {

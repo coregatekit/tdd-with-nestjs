@@ -24,13 +24,7 @@ export class UsersService {
     const user = await this._prismaService.user.findFirst({
       where: { email: email },
     });
-    return {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-    } as IUserResponse;
+    return this.transformUserToResponse(user);
   }
 
   /**
