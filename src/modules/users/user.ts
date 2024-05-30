@@ -1,5 +1,4 @@
 import { IUser } from './users.interface';
-import * as bcrypt from 'bcrypt';
 import { UserPrismaResult } from './user.type';
 
 export class User implements IUser {
@@ -41,13 +40,5 @@ export class User implements IUser {
     this.createdAt = prismaResult.createdAt;
     this.updatedAt = prismaResult.updatedAt;
     return this;
-  }
-
-  /** Method that hashed password
-   * @param password The password to be hashed
-   * @returns The hashed password
-   */
-  hashedPassword(password: string): Promise<string> {
-    return bcrypt.hash(password, 10);
   }
 }
