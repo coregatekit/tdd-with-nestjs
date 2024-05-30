@@ -7,6 +7,8 @@ import {
 } from './users.interface';
 import { User } from './user';
 import { hashPassword } from '../../utils/hash';
+import { Prisma } from '@prisma/client';
+import { Messages, PrismaErrorCode } from '../../utils/messages';
 
 @Injectable()
 export class UsersService {
@@ -44,16 +46,31 @@ export class UsersService {
    * @returns The user response @interface IUserResponse
    */
   async register(registerUserDTO: RegisterUserDTO): Promise<IUserResponse> {
-    const hashedPassword = await hashPassword(registerUserDTO.password);
-    const newUser = await this._prismaService.user.create({
-      data: {
-        name: registerUserDTO.name,
-        email: registerUserDTO.email,
-        password: hashedPassword,
-      },
-    });
-    const user = new User().fromPrismaResult(newUser);
-    return this.transformUserToResponse(user);
+    try {
+      const hashedPassword = await hashPassword(registerUserDTO.password);
+      const newUser = await this._prismaService.user.create({
+        data: {
+          name: registerUserDTO.name,
+          email: registerUserDTO.email,
+          password: hashedPassword,
+        },
+      });
+      const user = new User().fromPrismaResult(newUser);
+      return this.transformUserToResponse(user);
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (
+          error.code === PrismaErrorCode.UNIQUE_CONSTRAINT &&
+          (error.meta.target as Array<string>).includes('email')
+        ) {
+          console.error(Messages.USER_ALREADY_EXISTS);
+          throw new HttpException(
+            Messages.USER_ALREADY_EXISTS,
+            HttpStatus.CONFLICT,
+          );
+        }
+      }
+    }
   }
 
   /**

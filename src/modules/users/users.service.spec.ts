@@ -10,6 +10,8 @@ import { User } from './user';
 import { UserPrismaResult } from './user.type';
 import { HttpException } from '@nestjs/common';
 import { hashPassword } from '../../utils/hash';
+import { Prisma } from '@prisma/client';
+import { PrismaErrorCode } from '../../utils/messages';
 
 jest.mock('../../utils/hash', () => ({
   hashPassword: jest.fn().mockResolvedValue('hashed_password'),
@@ -133,6 +135,33 @@ describe('UsersService', () => {
       });
       expect(hashPassword).toBeCalledWith(registerUser.password);
       expect(service.transformUserToResponse).toBeCalledWith(mockedNewUser);
+    });
+
+    it('should throw an error if user already exists', async () => {
+      const registerUser: RegisterUserDTO = {
+        name: 'John Doe',
+        email: 'john@example.com',
+        password: 'password',
+      };
+
+      mockPrismaService.user.create.mockImplementation(() => {
+        throw new Prisma.PrismaClientKnownRequestError(
+          'Unique constraint failed on the fields: (`email`)',
+          {
+            code: PrismaErrorCode.UNIQUE_CONSTRAINT,
+            clientVersion: '5.14.0',
+            meta: { modelName: 'User', target: ['email'] },
+          },
+        );
+      });
+
+      try {
+        await service.register(registerUser);
+      } catch (error) {
+        expect(error).toBeInstanceOf(HttpException);
+        expect(error.message).toEqual('User already exists');
+        expect(error.getStatus()).toEqual(409);
+      }
     });
   });
 
