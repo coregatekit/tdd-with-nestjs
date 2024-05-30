@@ -1,4 +1,4 @@
-import { IUser, IUserResponse } from './users.interface';
+import { IUser } from './users.interface';
 import * as bcrypt from 'bcrypt';
 import { UserPrismaResult } from './user.type';
 
@@ -49,19 +49,5 @@ export class User implements IUser {
    */
   hashedPassword(password: string): Promise<string> {
     return bcrypt.hash(password, 10);
-  }
-
-  /**
-   * Method that convert user instance to @interface UserResponse
-   * @returns The user response @interface IUserResponse
-   */
-  transformUserToResponse(): IUserResponse {
-    return {
-      id: this.id,
-      name: this.name,
-      email: this.email,
-      createdAt: this.createdAt,
-      updatedAt: this.updatedAt,
-    };
   }
 }
