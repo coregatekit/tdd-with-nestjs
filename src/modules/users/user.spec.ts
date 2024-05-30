@@ -1,5 +1,5 @@
 import { User } from './user';
-import { IUser } from './users.interface';
+import { IUser, IUserResponse } from './users.interface';
 import * as bcrypt from 'bcrypt';
 import { UserPrismaResult } from './user.type';
 
@@ -63,6 +63,28 @@ describe('Users', () => {
 
       expect(result).toEqual('hashed_password');
       expect(bcrypt.hash).toBeCalledWith('password', 10);
+    });
+  });
+
+  describe('transformUserToResponse', () => {
+    it('should return user response', () => {
+      const user = new User(
+        '1',
+        'John Doe',
+        'john@example.com',
+        'password',
+        new Date(),
+        new Date(),
+      );
+      const expectedUserResponse: IUserResponse = {
+        id: '1',
+        name: 'John Doe',
+        email: 'john@example.com',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      expect(user.transformUserToResponse()).toEqual(expectedUserResponse);
     });
   });
 });
