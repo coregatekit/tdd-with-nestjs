@@ -1,6 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { IUserResponse, RegisterUserDTO } from './users.interface';
+import {
+  IUserResponse,
+  RegisterUserDTO,
+  UpdateUserDTO,
+} from './users.interface';
 import { User } from './user';
 
 @Injectable()
@@ -41,6 +45,28 @@ export class UsersService {
       },
     });
     const user = new User().fromPrismaResult(newUser);
+    return this.transformUserToResponse(user);
+  }
+
+  /**
+   * Method that update user
+   * @param id The user id @type string
+   * @param updateUserDTO The update user dto @interface UpdateUserDTO
+   * @returns The user response @interface IUserResponse
+   */
+  async update(
+    id: string,
+    updateUserDTO: UpdateUserDTO,
+  ): Promise<IUserResponse> {
+    const updatedUser = await this._prismaService.user.update({
+      where: { id: id },
+      data: {
+        name: updateUserDTO.name || undefined,
+        email: updateUserDTO.email || undefined,
+        password: updateUserDTO.password || undefined,
+      },
+    });
+    const user = new User().fromPrismaResult(updatedUser);
     return this.transformUserToResponse(user);
   }
 

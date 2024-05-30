@@ -1,8 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from './users.service';
 import { PrismaService } from '../prisma/prisma.service';
-import { IUserResponse, RegisterUserDTO } from './users.interface';
+import {
+  IUserResponse,
+  RegisterUserDTO,
+  UpdateUserDTO,
+} from './users.interface';
 import { User } from './user';
+import { UserPrismaResult } from './user.type';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -11,6 +16,7 @@ describe('UsersService', () => {
     user: {
       findFirst: jest.fn(),
       create: jest.fn(),
+      update: jest.fn(),
     },
   };
 
@@ -105,6 +111,39 @@ describe('UsersService', () => {
         },
       });
       expect(service.transformUserToResponse).toBeCalledWith(mockedNewUser);
+    });
+  });
+
+  describe('update', () => {
+    it('should update a user', async () => {
+      const updateUser: UpdateUserDTO = {
+        name: 'Jane Doe',
+        email: 'jane@example.com',
+        password: 'password',
+      };
+      const expectedUserResponse: IUserResponse = {
+        id: '1',
+        name: 'Jane Doe',
+        email: 'jane@example.com',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      const mockedUpdateUserResult: UserPrismaResult = {
+        ...expectedUserResponse,
+        password: 'hashed_password',
+      };
+      const mockedUpdatedUser = new User().fromPrismaResult(
+        mockedUpdateUserResult,
+      );
+      mockPrismaService.user.update.mockResolvedValue(mockedUpdateUserResult);
+      service.transformUserToResponse = jest
+        .fn()
+        .mockResolvedValue(expectedUserResponse);
+
+      const result = await service.update('1', updateUser);
+
+      expect(result).toEqual(expectedUserResponse);
+      expect(service.transformUserToResponse).toBeCalledWith(mockedUpdatedUser);
     });
   });
 
