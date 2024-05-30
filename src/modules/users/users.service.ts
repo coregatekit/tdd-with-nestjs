@@ -6,6 +6,7 @@ import {
   UpdateUserDTO,
 } from './users.interface';
 import { User } from './user';
+import { hashPassword } from '../../utils/hash';
 
 @Injectable()
 export class UsersService {
@@ -43,11 +44,12 @@ export class UsersService {
    * @returns The user response @interface IUserResponse
    */
   async register(registerUserDTO: RegisterUserDTO): Promise<IUserResponse> {
+    const hashedPassword = await hashPassword(registerUserDTO.password);
     const newUser = await this._prismaService.user.create({
       data: {
         name: registerUserDTO.name,
         email: registerUserDTO.email,
-        password: registerUserDTO.password,
+        password: hashedPassword,
       },
     });
     const user = new User().fromPrismaResult(newUser);

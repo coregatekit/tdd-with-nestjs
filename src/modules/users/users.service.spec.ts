@@ -9,6 +9,11 @@ import {
 import { User } from './user';
 import { UserPrismaResult } from './user.type';
 import { HttpException } from '@nestjs/common';
+import { hashPassword } from '../../utils/hash';
+
+jest.mock('../../utils/hash', () => ({
+  hashPassword: jest.fn().mockResolvedValue('hashed_password'),
+}));
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -123,9 +128,10 @@ describe('UsersService', () => {
         data: {
           name: registerUser.name,
           email: registerUser.email,
-          password: registerUser.password,
+          password: 'hashed_password',
         },
       });
+      expect(hashPassword).toBeCalledWith(registerUser.password);
       expect(service.transformUserToResponse).toBeCalledWith(mockedNewUser);
     });
   });
@@ -189,5 +195,6 @@ describe('UsersService', () => {
 
   afterEach(() => {
     global.Date.now = RealDate;
+    jest.clearAllMocks();
   });
 });
