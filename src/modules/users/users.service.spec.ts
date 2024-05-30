@@ -8,6 +8,7 @@ import {
 } from './users.interface';
 import { User } from './user';
 import { UserPrismaResult } from './user.type';
+import { HttpException } from '@nestjs/common';
 
 describe('UsersService', () => {
   let service: UsersService;
@@ -70,6 +71,21 @@ describe('UsersService', () => {
         where: { email: expectedUser.email },
       });
       expect(service.transformUserToResponse).toBeCalled();
+    });
+
+    it('should throw http exception if user not found', async () => {
+      mockPrismaService.user.findFirst.mockResolvedValue(null);
+
+      try {
+        await service.findUserByEmail('john@example.com');
+      } catch (error) {
+        expect(error).toBeInstanceOf(HttpException);
+        expect(error.message).toEqual('User not found');
+        expect(error.getStatus()).toEqual(404);
+        expect(mockPrismaService.user.findFirst).toBeCalledWith({
+          where: { email: 'john@example.com' },
+        });
+      }
     });
   });
 

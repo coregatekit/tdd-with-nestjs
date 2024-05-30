@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import {
   IUserResponse,
@@ -28,6 +28,12 @@ export class UsersService {
     const user = await this._prismaService.user.findFirst({
       where: { email: email },
     });
+
+    if (!user) {
+      console.info('User not found');
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
     return this.transformUserToResponse(user as User);
   }
 
