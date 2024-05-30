@@ -107,6 +107,7 @@ export class UsersService {
       email: user.email,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
+      isActive: user.isActive,
     } as IUserResponse;
   }
 }

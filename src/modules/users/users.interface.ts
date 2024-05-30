@@ -5,6 +5,7 @@ export interface IUser {
   password: string;
   createdAt?: Date;
   updatedAt?: Date;
+  isActive: boolean;
 }
 
 export interface IUserResponse {
@@ -13,6 +14,7 @@ export interface IUserResponse {
   email: string;
   createdAt: Date;
   updatedAt: Date;
+  isActive: boolean;
 }
 
 export interface RegisterUserDTO {
@@ -25,4 +27,5 @@ export interface UpdateUserDTO {
   name?: string;
   email?: string;
   password?: string;
+  isActive?: boolean;
 }

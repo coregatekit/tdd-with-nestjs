@@ -33,6 +33,7 @@ describe('Users', () => {
         password: 'password',
         createdAt: new Date(),
         updatedAt: new Date(),
+        isActive: true,
       };
 
       const user = new User();

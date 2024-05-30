@@ -42,6 +42,7 @@ describe('UsersController', () => {
         email: 'john@example.com',
         createdAt: new Date(),
         updatedAt: new Date(),
+        isActive: true,
       };
       mockUsersService.findUserByEmail.mockResolvedValue(expectedResult);
 
@@ -64,6 +65,7 @@ describe('UsersController', () => {
         email: 'john@example.com',
         createdAt: new Date(),
         updatedAt: new Date(),
+        isActive: true,
       };
       mockUsersService.register.mockResolvedValue(expectedResult);
 
@@ -85,6 +87,7 @@ describe('UsersController', () => {
         email: 'jane@example.com',
         createdAt: new Date(),
         updatedAt: new Date(),
+        isActive: true,
       };
 
       mockUsersService.update.mockResolvedValue(expectedResult);

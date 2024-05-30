@@ -65,6 +65,7 @@ describe('UsersService', () => {
         email: mockedUser.email,
         createdAt: new Date(),
         updatedAt: new Date(),
+        isActive: true,
       } as IUserResponse;
       mockPrismaService.user.findFirst.mockResolvedValue(mockedUser);
       service.transformUserToResponse = jest
@@ -117,6 +118,7 @@ describe('UsersService', () => {
         email: 'john@example.com',
         createdAt: new Date(),
         updatedAt: new Date(),
+        isActive: true,
       };
       mockPrismaService.user.create.mockResolvedValue(mockedNewUser);
       service.transformUserToResponse = jest
@@ -178,6 +180,7 @@ describe('UsersService', () => {
         email: 'jane@example.com',
         createdAt: new Date(),
         updatedAt: new Date(),
+        isActive: true,
       };
       const mockedUpdateUserResult: UserPrismaResult = {
         ...expectedUserResponse,
@@ -207,6 +210,7 @@ describe('UsersService', () => {
         'password',
         new Date(),
         new Date(),
+        true,
       );
       const expectedUserResponse = {
         id: '1',
@@ -214,6 +218,7 @@ describe('UsersService', () => {
         email: 'john@example.com',
         createdAt: new Date(),
         updatedAt: new Date(),
+        isActive: true,
       } as IUserResponse;
 
       const result = service.transformUserToResponse(user);

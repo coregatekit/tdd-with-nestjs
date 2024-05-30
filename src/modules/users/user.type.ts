@@ -7,6 +7,7 @@ export type UserSelectType = {
   password: string;
   createdAt: Date;
   updatedAt: Date;
+  isActive: boolean;
 };
 
 const userSelect = {
@@ -16,6 +17,7 @@ const userSelect = {
   password: true,
   createdAt: true,
   updatedAt: true,
+  isActive: true,
 };
 
 export type UserPrismaResult = Prisma.UserGetPayload<{

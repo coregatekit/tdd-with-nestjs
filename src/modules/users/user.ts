@@ -8,6 +8,7 @@ export class User implements IUser {
   password: string;
   createdAt: Date;
   updatedAt: Date;
+  isActive: boolean;
 
   /** Constructor of the User class
    *
@@ -19,6 +20,7 @@ export class User implements IUser {
     password?: string,
     createdAt?: Date,
     updatedAt?: Date,
+    isActive?: boolean,
   ) {
     this.id = id;
     this.name = name;
@@ -26,6 +28,7 @@ export class User implements IUser {
     this.password = password;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
+    this.isActive = isActive;
   }
 
   /** Method that convert prisma result to user instance
@@ -39,6 +42,7 @@ export class User implements IUser {
     this.password = prismaResult.password;
     this.createdAt = prismaResult.createdAt;
     this.updatedAt = prismaResult.updatedAt;
+    this.isActive = prismaResult.isActive;
     return this;
   }
 }
