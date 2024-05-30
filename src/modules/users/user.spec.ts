@@ -1,7 +1,7 @@
-import { Prisma } from '@prisma/client';
 import { User } from './user';
 import { IUser } from './users.interface';
 import * as bcrypt from 'bcrypt';
+import { UserPrismaResult } from './user.type';
 
 jest.mock('bcrypt', () => ({
   hash: jest.fn().mockResolvedValue('hashed_password'),
@@ -31,25 +31,20 @@ describe('Users', () => {
 
   describe('fromPrismaResult', () => {
     it('should convert prisma result to user instance', () => {
-      const prismaResult: Prisma.$UserPayload = {
-        name: 'User',
-        objects: {},
-        composites: {},
-        scalars: {
-          id: '1',
-          name: 'John Doe',
-          email: 'john@example.com',
-          password: 'password',
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
+      const prismaResult: UserPrismaResult = {
+        id: '1',
+        name: 'John Doe',
+        email: 'john@example.com',
+        password: 'password',
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
       const user = new User();
 
       user.fromPrismaResult(prismaResult);
 
-      expect(user).toEqual(prismaResult.scalars);
+      expect(user).toEqual(prismaResult);
     });
   });
 

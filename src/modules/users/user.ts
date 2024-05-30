@@ -1,6 +1,6 @@
-import { Prisma } from '@prisma/client';
 import { IUser } from './users.interface';
 import * as bcrypt from 'bcrypt';
+import { UserPrismaResult } from './user.type';
 
 export class User implements IUser {
   id: string;
@@ -33,13 +33,13 @@ export class User implements IUser {
    * @param prismaResult The prisma result
    * @returns The user instance
    */
-  fromPrismaResult(prismaResult: Prisma.$UserPayload): User {
-    this.id = prismaResult.scalars.id;
-    this.name = prismaResult.scalars.name;
-    this.email = prismaResult.scalars.email;
-    this.password = prismaResult.scalars.password;
-    this.createdAt = prismaResult.scalars.createdAt;
-    this.updatedAt = prismaResult.scalars.updatedAt;
+  fromPrismaResult(prismaResult: UserPrismaResult): User {
+    this.id = prismaResult.id;
+    this.name = prismaResult.name;
+    this.email = prismaResult.email;
+    this.password = prismaResult.password;
+    this.createdAt = prismaResult.createdAt;
+    this.updatedAt = prismaResult.updatedAt;
     return this;
   }
 
