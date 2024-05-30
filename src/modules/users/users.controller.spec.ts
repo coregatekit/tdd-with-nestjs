@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
-import { IUserResponse } from './users.interface';
+import { IUserResponse, UpdateUserDTO } from './users.interface';
 
 describe('UsersController', () => {
   let controller: UsersController;
@@ -9,6 +9,7 @@ describe('UsersController', () => {
   const mockUsersService = {
     findUserByEmail: jest.fn(),
     register: jest.fn(),
+    update: jest.fn(),
   };
 
   const RealDate = Date.now;
@@ -67,6 +68,28 @@ describe('UsersController', () => {
       mockUsersService.register.mockResolvedValue(expectedResult);
 
       const result = await controller.register(registerUserDTO);
+
+      expect(result).toEqual(expectedResult);
+    });
+  });
+
+  describe('update', () => {
+    it('should return a user response after update', async () => {
+      const updateUserDTO: UpdateUserDTO = {
+        name: 'Jane Doe',
+        email: 'jane@example.com',
+      };
+      const expectedResult: IUserResponse = {
+        id: '1',
+        name: 'Jane Doe',
+        email: 'jane@example.com',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      mockUsersService.update.mockResolvedValue(expectedResult);
+
+      const result = await controller.update('1', updateUserDTO);
 
       expect(result).toEqual(expectedResult);
     });
