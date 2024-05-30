@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { IUserResponse } from './users.interface';
+import { IUserResponse, RegisterUserDTO } from './users.interface';
 import { User } from './user';
 
 @Injectable()
@@ -24,6 +24,23 @@ export class UsersService {
     const user = await this._prismaService.user.findFirst({
       where: { email: email },
     });
+    return this.transformUserToResponse(user as User);
+  }
+
+  /**
+   * Method that register user
+   * @param registerUserDTO @interface RegisterUserDTO
+   * @returns The user response @interface IUserResponse
+   */
+  async register(registerUserDTO: RegisterUserDTO): Promise<IUserResponse> {
+    const newUser = await this._prismaService.user.create({
+      data: {
+        name: registerUserDTO.name,
+        email: registerUserDTO.email,
+        password: registerUserDTO.password,
+      },
+    });
+    const user = new User().fromPrismaResult(newUser);
     return this.transformUserToResponse(user);
   }
 

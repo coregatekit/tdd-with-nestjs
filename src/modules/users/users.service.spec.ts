@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from './users.service';
 import { PrismaService } from '../prisma/prisma.service';
-import { IUserResponse } from './users.interface';
+import { IUserResponse, RegisterUserDTO } from './users.interface';
 import { User } from './user';
 
 describe('UsersService', () => {
@@ -10,6 +10,7 @@ describe('UsersService', () => {
   const mockPrismaService = {
     user: {
       findFirst: jest.fn(),
+      create: jest.fn(),
     },
   };
 
@@ -68,6 +69,59 @@ describe('UsersService', () => {
         where: { email: expectedUser.email },
       });
       expect(service.transformUserToResponse).toBeCalled();
+    });
+
+    afterEach(() => {
+      global.Date.now = RealDate;
+    });
+  });
+
+  describe('register', () => {
+    const RealDate = Date.now;
+
+    beforeEach(() => {
+      global.Date.now = jest.fn(() =>
+        new Date('2024-01-23T10:20:30Z').getTime(),
+      );
+    });
+
+    it('should register a new user', async () => {
+      const registerUser: RegisterUserDTO = {
+        name: 'John Doe',
+        email: 'john@example.com',
+        password: 'password',
+      };
+      const mockedNewUser = new User(
+        '1',
+        registerUser.name,
+        registerUser.email,
+        registerUser.password,
+        new Date(),
+        new Date(),
+      );
+      const expectedUserResponse: IUserResponse = {
+        id: '1',
+        name: 'John Doe',
+        email: 'john@example.com',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      mockPrismaService.user.create.mockResolvedValue(mockedNewUser);
+      service.transformUserToResponse = jest
+        .fn()
+        .mockResolvedValue(expectedUserResponse);
+
+      const result = await service.register(registerUser);
+
+      expect(result).toEqual(expectedUserResponse);
+      expect(mockPrismaService.user.create).toBeCalledWith({
+        data: {
+          name: registerUser.name,
+          email: registerUser.email,
+          password: registerUser.password,
+        },
+      });
+      expect(service.transformUserToResponse).toBeCalledWith(mockedNewUser);
     });
 
     afterEach(() => {
