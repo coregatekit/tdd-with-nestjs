@@ -50,6 +50,28 @@ describe('UsersController', () => {
     });
   });
 
+  describe('register', () => {
+    it('should return a user', async () => {
+      const registerUserDTO = {
+        name: 'John Doe',
+        email: 'john@example.com',
+        password: 'password',
+      };
+      const expectedResult: IUserResponse = {
+        id: '1',
+        name: 'John Doe',
+        email: 'john@example.com',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      mockUsersService.register.mockResolvedValue(expectedResult);
+
+      const result = await controller.register(registerUserDTO);
+
+      expect(result).toEqual(expectedResult);
+    });
+  });
+
   afterEach(() => {
     global.Date.now = RealDate;
   });

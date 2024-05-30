@@ -1,5 +1,6 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { UsersService } from './users.service';
+import { RegisterUserDTO } from './users.interface';
 
 @Controller('users')
 export class UsersController {
@@ -15,5 +16,10 @@ export class UsersController {
   @Get(':email')
   async findUserByEmail(@Param('email') email: string) {
     return this._usersService.findUserByEmail(email);
+  }
+
+  @Post()
+  async register(@Body() registerUserDTO: RegisterUserDTO) {
+    return this._usersService.register(registerUserDTO);
   }
 }
