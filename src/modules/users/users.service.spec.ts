@@ -14,6 +14,8 @@ describe('UsersService', () => {
     },
   };
 
+  const RealDate = Date.now;
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -26,6 +28,7 @@ describe('UsersService', () => {
     }).compile();
 
     service = module.get<UsersService>(UsersService);
+    global.Date.now = jest.fn(() => new Date('2024-01-23T10:20:30Z').getTime());
   });
 
   it('should be defined', () => {
@@ -33,14 +36,6 @@ describe('UsersService', () => {
   });
 
   describe('findUserByEmail', () => {
-    const RealDate = Date.now;
-
-    beforeEach(() => {
-      global.Date.now = jest.fn(() =>
-        new Date('2024-01-23T10:20:30Z').getTime(),
-      );
-    });
-
     it('should return a user', async () => {
       const mockedUser = new User(
         '1',
@@ -70,21 +65,9 @@ describe('UsersService', () => {
       });
       expect(service.transformUserToResponse).toBeCalled();
     });
-
-    afterEach(() => {
-      global.Date.now = RealDate;
-    });
   });
 
   describe('register', () => {
-    const RealDate = Date.now;
-
-    beforeEach(() => {
-      global.Date.now = jest.fn(() =>
-        new Date('2024-01-23T10:20:30Z').getTime(),
-      );
-    });
-
     it('should register a new user', async () => {
       const registerUser: RegisterUserDTO = {
         name: 'John Doe',
@@ -123,20 +106,9 @@ describe('UsersService', () => {
       });
       expect(service.transformUserToResponse).toBeCalledWith(mockedNewUser);
     });
-
-    afterEach(() => {
-      global.Date.now = RealDate;
-    });
   });
 
   describe('transformToResponse', () => {
-    const RealDate = Date.now;
-    beforeEach(() => {
-      global.Date.now = jest.fn(() =>
-        new Date('2024-01-23T10:20:30Z').getTime(),
-      );
-    });
-
     it('should return a user response', () => {
       const user = new User(
         '1',
@@ -158,9 +130,9 @@ describe('UsersService', () => {
 
       expect(result).toEqual(expectedUserResponse);
     });
+  });
 
-    afterEach(() => {
-      global.Date.now = RealDate;
-    });
+  afterEach(() => {
+    global.Date.now = RealDate;
   });
 });
