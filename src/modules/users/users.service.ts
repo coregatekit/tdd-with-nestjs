@@ -33,7 +33,6 @@ export class UsersService {
     });
 
     if (!user) {
-      console.info('User not found');
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
 
@@ -63,7 +62,6 @@ export class UsersService {
           error.code === PrismaErrorCode.UNIQUE_CONSTRAINT &&
           (error.meta.target as Array<string>).includes('email')
         ) {
-          console.error(Messages.USER_ALREADY_EXISTS);
           throw new HttpException(
             Messages.USER_ALREADY_EXISTS,
             HttpStatus.CONFLICT,
