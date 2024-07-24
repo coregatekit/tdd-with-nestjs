@@ -14,16 +14,9 @@ pipeline {
             }
         }
 
-        stage('Preparing Environment') {
-            steps {
-                sh 'corepack enable'
-                sh 'corepack prepare pnpm@latest-9 --activate'
-            }
-        }
-
         stage('Install Dependencies') {
             steps {
-                sh 'pnpm install'
+                sh 'npm install'
             }
         }
     }
