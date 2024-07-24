@@ -20,4 +20,15 @@ pipeline {
             }
         }
     }
+
+    post {
+        success {
+            echo 'Build Success'
+            cleanWs()
+        }
+        failure {
+            echo 'Build Failed'
+            cleanWs()
+        }
+    }
 }
