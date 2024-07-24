@@ -7,6 +7,14 @@ pipeline {
         DOCKER_CREDENTIALS_ID = ''
     }
 
+    options {
+        ansiColor('xterm')
+    }
+
+    parameters {
+        string(name: 'DOCKER_IMAGE', defaultValue: '', description: 'Docker Image Name')
+    }
+
     stages {
         stage('Checkout') {
             steps {
